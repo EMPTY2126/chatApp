@@ -1,0 +1,18 @@
+.bgC {
+  background: rgb(83, 0, 97);
+  background: linear-gradient(
+    90deg,
+    rgba(83, 0, 97, 1) 0%,
+    rgba(13, 10, 48, 1) 36%
+  );
+}
+
+.bgI {
+  background: rgb(98, 142, 255);
+  background: linear-gradient(
+    90deg,
+    rgba(98, 142, 255, 1) 0%,
+    rgba(135, 64, 205, 1) 53%,
+    rgba(88, 4, 117, 1) 100%
+  );
+}

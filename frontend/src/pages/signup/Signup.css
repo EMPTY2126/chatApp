@@ -1,0 +1,39 @@
+.glassy {
+  background: rgba(1, 0, 0, 0.2.7);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(8.5px);
+  -webkit-backdrop-filter: blur(8.5px);
+  border-radius: 10px;
+  border: 1px solid #e6ebed;
+  max-width: 470px;
+}
+
+.bgU {
+  background: rgb(25, 0, 97);
+  background: -moz-linear-gradient(
+    90deg,
+    rgba(25, 0, 97, 1) 0%,
+    rgba(10, 27, 48, 1) 100%
+  );
+  background: -webkit-linear-gradient(
+    90deg,
+    rgba(25, 0, 97, 1) 0%,
+    rgba(10, 27, 48, 1) 100%
+  );
+  background: linear-gradient(
+    90deg,
+    rgba(25, 0, 97, 1) 0%,
+    rgba(10, 27, 48, 1) 100%
+  );
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#190061",endColorstr="#0a1b30",GradientType=1);
+}
+
+.Signinbtn {
+  background: rgb(46, 76, 238);
+  background: linear-gradient(
+    90deg,
+    rgba(46, 76, 238, 1) 0%,
+    rgba(34, 30, 191, 1) 53%,
+    rgba(4, 15, 117, 1) 100%
+  );
+}
