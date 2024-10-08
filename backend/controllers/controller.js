@@ -8,7 +8,10 @@ const SECRET = process.env.SECRET;
 
 const signup = async (req,res)=>{
     const {userName,pwd,userEmail} = req.body; //get user detail
-    if(!userName || !pwd) res.status(201).json({isSuccess:false,user:null,msg:"Invalid details"});
+    if(!userName || !pwd) return res.status(201).json({isSuccess:false,user:null,msg:"Invalid details"});
+
+    let isUser = await User.findOne({userEmail});
+    if(isUser !== null) return res.status(403).json({isSuccess:false,msg:"User is already registred"});
 
     const {hash,salt} = genHS(pwd); //generate hash and salt 
     const newUser = new User({  // creating the new user
@@ -19,9 +22,9 @@ const signup = async (req,res)=>{
     });
     try {
         await newUser.save(); // save the user in model and return user
-        res.status(201).json({isSuccess:true,user:newUser,msg:"user created succesfully"});
+        return res.status(201).json({isSuccess:true,user:newUser,msg:"user created succesfully"});
     } catch (error) { //other error
-        res.status(500).json({isSuccess:false,user:null,msg:"Internal server error"});
+        return res.status(500).json({isSuccess:false,user:null,msg:"Internal server error"});
     }
 }
 
@@ -34,7 +37,7 @@ const login = async(req,res)=>{
         else if(!verifyHS(pwd,user.hash,user.salt)) res.status(200).json({isSuccess:false,msg:'Wrong password'}); //verify password
         else { //if user exist and password is correct 
             const token = jwt.sign({userEmail:user.userEmail}, SECRET, {expiresIn:'1h'}); //JWT token
-            res.cookie('token',token,{httpOnly: true, secure:true}); //setting cookie
+            res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 3600000  });//setting cookie
             res.status(200).json({user,isSuccess:true,msg:'user Logged in successfully'}); // returning user deatil
         }
     }catch(error){ // any other error
