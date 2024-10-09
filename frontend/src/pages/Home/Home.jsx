@@ -3,16 +3,30 @@ import TextCard from "../../components/TextCard";
 import ChatTopProfile from "../../components/ChatTopProfile";
 import MessageBottom from "../../components/MessageBottom";
 import MessageBox from "../../components/MessageBox";
+import Cookies from 'js-cookie';
+import {useAuth} from '../../context/AuthContext';
 
 function Home() {
+
+  const {setIsAuth} = useAuth();
+
+  const handleLogout = ()=>{
+      Cookies.remove('token');
+      setIsAuth(false);
+  }
   return (
+
     <div className=" relative w-screen h-screen flex flex-col justify-start items-center">
       <div className="mt-5 w-full h-[96vh] flex">
         {/* chatList and Search Side  */}
         <div className="ml-16 w-1/4 min-w-[340px] max-w-[500px] h-full flex flex-col">
           <div className="relative text-white w-full">
             <div className="absolute text-2xl">
+              <div className="flex flex-row justify-between items-center">
               <div className="ml-3 mt-2">Chats</div>
+              <button onClick={handleLogout} className="btn btn-primary">Logout</button>
+              </div>
+              
             </div>
             {/* Input with search box */}
             <label className="mt-12 ml-3 mr-4 mb-2 input input-bordered flex items-center gap-2">

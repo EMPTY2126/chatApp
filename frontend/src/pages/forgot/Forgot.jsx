@@ -34,7 +34,7 @@ function Forgot() {
         </div>
 
         <div className="relative w-[1000px] h-[90%] flex flex-col justify-center">
-          <div className="pl-10 pr-20 w-[75%] min-w-[430px] h-full min-h-[800px] rounded-2xl top-[8%] flex flex-col justify-center glassy">
+          <div className="pl-10 pr-20 w-[75%] min-w-[430px] h-full min-h-[590px] rounded-2xl top-[8%] flex flex-col justify-center overflow-auto glassy">
             <div className="mt-16 text-4xl  text-white leading-sm">
               Forgot Password ?
             </div>
@@ -53,7 +53,7 @@ function Forgot() {
               <Link to="/signup" className=" text-white text-base text-center">
                 Dont't have an account? Signup
               </Link>
-              <div className=" text-white flex justify-between items-center text-sm">
+              <div className="text-white flex justify-between items-center text-sm gap-5">
                 <div>Terms & Conditions</div>
                 <div>Support</div>
                 <div>Customer Care</div>

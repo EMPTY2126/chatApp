@@ -37,7 +37,7 @@ const login = async(req,res)=>{
         else if(!verifyHS(pwd,user.hash,user.salt)) res.status(200).json({isSuccess:false,msg:'Wrong password'}); //verify password
         else { //if user exist and password is correct 
             const token = jwt.sign({userEmail:user.userEmail}, SECRET, {expiresIn:'1h'}); //JWT token
-            res.cookie('token', token, { httpOnly: true, secure: false, maxAge: 3600000  });//setting cookie
+            res.cookie('token', token, { httpOnly: false, secure: false, maxAge: 3600000  });//setting cookie
             res.status(200).json({user,isSuccess:true,msg:'user Logged in successfully'}); // returning user deatil
         }
     }catch(error){ // any other error
@@ -55,6 +55,7 @@ const authenticator = (req,res,next)=>{
         next(); //procede next route
     });
 }
+
 
 
 export default{
