@@ -6,13 +6,18 @@ const userSchema = new mongoose.Schema({
         required:true,
         trim:true,
     },
+    userId: {
+        type:String,
+        required:true,
+    },
     userImage:String,
     userEmail:{
         type:String,
         required:true
     },
     hash:String,
-    salt:String
+    salt:String,
+    
 },{timestamps:true});
 
 const User = mongoose.model('user',userSchema); 
