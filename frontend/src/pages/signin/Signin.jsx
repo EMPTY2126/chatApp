@@ -10,8 +10,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./Signin.css";
 
 function Signin() {
-  const { setIsAuth } = useAuth();
-
+  const { setIsAuth,setUser } = useAuth();
   const navigate = useNavigate();
   const [showPas, setShowPas] = useState(false);
   const [userCreds, setUserCreds] = useState({
@@ -44,7 +43,10 @@ function Signin() {
       pwd: "",
     });
 
-    if (data.isSuccess) setIsAuth(true);
+    if (data.isSuccess) {
+      setIsAuth(true);
+      setUser(data.user.userId);
+    }
   };
 
   return (

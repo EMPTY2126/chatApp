@@ -1,32 +1,66 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TextCard from "../../components/TextCard";
 import ChatTopProfile from "../../components/ChatTopProfile";
 import MessageBottom from "../../components/MessageBottom";
 import MessageBox from "../../components/MessageBox";
-import Cookies from 'js-cookie';
-import {useAuth} from '../../context/AuthContext';
+import Cookies from "js-cookie";
+import { useAuth } from "../../context/AuthContext";
+import { TbLogout2 } from "react-icons/tb";
+import { io } from "socket.io-client";
+import axios from "axios";
 
 function Home() {
+  const { setIsAuth, setUser, user } = useAuth();
+  const [friends, setFriends] = useState([]);
 
-  const {setIsAuth} = useAuth();
+  const friendList = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/getfriends", {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-  const handleLogout = ()=>{
-      Cookies.remove('token');
-      setIsAuth(false);
-  }
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      let data = await response.json();
+      data = data.friendList.friendsList;
+      const mapData = data.map((ele, index) => (
+        <TextCard key={index} userName={ele.userName} date="monday" />
+      ));
+      setFriends(mapData);
+    } catch (error) {
+      console.error("Error fetching friends list:", error);
+    }
+  };
+
+  useEffect(() => {
+    friendList();
+  }, []);
+
+  const handleLogout = () => {
+    Cookies.remove("token");
+    setIsAuth(false);
+    setUser(null);
+  };
+
   return (
-
     <div className=" relative w-screen h-screen flex flex-col justify-start items-center">
       <div className="mt-5 w-full h-[96vh] flex">
         {/* chatList and Search Side  */}
         <div className="ml-16 w-1/4 min-w-[340px] max-w-[500px] h-full flex flex-col">
           <div className="relative text-white w-full">
-            <div className="absolute text-2xl">
-              <div className="flex flex-row justify-between items-center">
-              <div className="ml-3 mt-2">Chats</div>
-              <button onClick={handleLogout} className="btn btn-primary">Logout</button>
+            <div className="w-full absolute text-2xl">
+              <div className=" flex flex-row justify-between items-center">
+                <div className="ml-3 mt-2">Chats</div>
+                <button onClick={handleLogout} className="mt-3 mr-5">
+                  <TbLogout2 />
+                </button>
               </div>
-              
             </div>
             {/* Input with search box */}
             <label className="mt-12 ml-3 mr-4 mb-2 input input-bordered flex items-center gap-2">
@@ -46,20 +80,7 @@ function Home() {
             </label>
           </div>
           {/* chat list */}
-          <div className="w-full h-full overflow-y-auto ">
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-            <TextCard userName="Abhishek M" date="monday" />
-
-          </div>
+          <div className="w-full h-full overflow-y-auto ">{friends}</div>
         </div>
         {/* chat & message  */}
         <div className="mr-16 flex-grow bg-[#1f2937] flex flex-col">

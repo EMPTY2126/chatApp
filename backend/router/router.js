@@ -1,10 +1,14 @@
 import { Router } from "express";
-import controller from "../controllers/controller.js";
+import authController from "../controllers/authController.js";
+import friendController from "../controllers/friendController.js"
+
 
 export const router = Router();
 
-router.post('/api/signup',controller.signup)
-router.post('/api/login',controller.login)
+router.post('/api/signup',authController.signup);
+router.post('/api/login',authController.login);
+router.get('/api/getfriends', authController.authenticator,friendController.getFriendList);
+
 
 
 
