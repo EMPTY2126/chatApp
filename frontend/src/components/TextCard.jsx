@@ -1,8 +1,8 @@
 import React from "react";
 
-function TextCard({ userName, date, lastMessage }) {
+function TextCard({ userName,textCardHandler, date, lastMessage }) {
   return (
-    <div className="h-20 w-full flex justify-start items-center">
+    <div onClick={textCardHandler} className="h-20 w-full flex justify-start items-center">
       <div className="ml-2 mr-2 avatar">
         <div className="w-16 rounded-full">
           <img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />

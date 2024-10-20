@@ -11,7 +11,13 @@ import cookieParser from "cookie-parser";
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000', 
+        methods: ['GET', 'POST'],
+        credentials: true,
+    },
+});
 dotenv.config();
 
 const PORT = process.env.PORT || 5000

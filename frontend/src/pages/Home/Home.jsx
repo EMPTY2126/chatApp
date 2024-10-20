@@ -6,40 +6,37 @@ import MessageBox from "../../components/MessageBox";
 import Cookies from "js-cookie";
 import { useAuth } from "../../context/AuthContext";
 import { TbLogout2 } from "react-icons/tb";
-import { io } from "socket.io-client";
-import axios from "axios";
+import { createSocket } from "../../socket/socket";
+import handler from "./handler";
 
 function Home() {
   const { setIsAuth, setUser, user } = useAuth();
   const [friends, setFriends] = useState([]);
+  const [socket, setSocket] = useState(null);
+  const [chatProfile, setChatProfile] = useState({
+    userId: "",
+    userName: "",
+    userImage: "",
+  });
 
-  const friendList = async () => {
-    try {
-      const response = await fetch("http://localhost:5000/api/getfriends", {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
+  
+  useEffect(() => {
+
+    handler.friendList(setChatProfile,setFriends);//Friend list loader
+    if(user){
+      const newSocket = createSocket(user);
+      setSocket(newSocket);
+      newSocket.on("connection", () => console.log("socket online"));
+      newSocket.on("disconnect", () => console.log("socket offline"));
+
+      newSocket.on("messenger", (message) => {
+        console.log(message);
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      let data = await response.json();
-      data = data.friendList.friendsList;
-      const mapData = data.map((ele, index) => (
-        <TextCard key={index} userName={ele.userName} date="monday" />
-      ));
-      setFriends(mapData);
-    } catch (error) {
-      console.error("Error fetching friends list:", error);
+      return () => newSocket.disconnect();
     }
-  };
 
-  useEffect(() => {
-    friendList();
+    socket.emit('sendmessage',{});
   }, []);
 
   const handleLogout = () => {
@@ -82,16 +79,16 @@ function Home() {
           {/* chat list */}
           <div className="w-full h-full overflow-y-auto ">{friends}</div>
         </div>
-        {/* chat & message  */}
+        {/* chat & message container */}
         <div className="mr-16 flex-grow bg-[#1f2937] flex flex-col">
           {/* ChatTopProfile  */}
-          <ChatTopProfile userName="AnuLoose" profileImg="idk" />
+          <ChatTopProfile userName={chatProfile.userName} profileImg="idk" />
 
           {/* Message Box  */}
           <MessageBox />
 
           {/* Send message section   */}
-          <MessageBottom />
+          <MessageBottom chatProfile={chatProfile} socket={socket} />
         </div>
       </div>
     </div>
@@ -99,3 +96,42 @@ function Home() {
 }
 
 export default Home;
+
+ // const friendList = async () => {
+  //   const friends = await handler.friendList(setChatProfile);
+  //   if (friends) setFriends(friends);
+  // };
+
+
+
+// const friendList = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:5000/api/getfriends", {
+  //       method: "GET",
+  //       credentials: "include",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     });
+
+  //     if (!response.ok) {
+  //       throw new Error(`HTTP error! Status: ${response.status}`);
+  //     }
+
+  //     let data = await response.json();
+  //     data = data.friendList.friendsList;
+  //     const mapData = data.map((ele, index) => (
+  //       <TextCard
+  //         textCardHandler={()=>chatClickHandler(ele.userId,ele.userName)}
+  //         key={index}
+  //         userId={ele.userId}
+  //         userName={ele.userName}
+  //         date="monday"
+  //       />
+  //     ));
+  //     setFriends(mapData);
+  //   } catch (error) {
+  //     console.error("Error fetching friends list:", error);
+  //   }
+  // };
+

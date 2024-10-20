@@ -7,10 +7,10 @@ export const socketIO = (io) => {
         const userId = socket.handshake.query.userId;
         console.log(userId, ": user connected");
 
-        socket.on('sendMessage', async (msg) => {
+        socket.on('sendmessage', async (msg) => {
             const { reciver, message } = msg;
             const reciverId = onlineUsers[reciver];
-            await chatController(userId,reciverId,message);
+            await chatController.sendMessage(userId,reciverId,message);
         });
 
         socket.on('disconnect', () => {

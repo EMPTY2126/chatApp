@@ -13,13 +13,13 @@ const initializer = async(userId)=>{
 
 const getFriendList = async(req,res)=>{
     console.log("used getfriends route");
-    let userId = "qq"
+    let user = req.user;
+    let userId = user.user.userId;
     const friendList = await FriendList.findOne({id:userId})
-    .populate('friendsList','userName userEmail userImage')
+    .populate('friendsList','userName userEmail userImage userId')
     .select('-hash -salt')
     .exec();
 
-    console.log(friendList);
     res.status(200).json({friendList});
 }
 

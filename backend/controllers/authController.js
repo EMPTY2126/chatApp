@@ -52,13 +52,11 @@ const login = async (req, res) => {
 
 const authenticator = (req, res, next) => {
     const token = req.cookies.token; // get the cookie
-    console.log(token)
     if (!token) res.status(401).json({ msg: 'Access denied' }); //check for token 
     try {
         jwt.verify(token, SECRET, (err, user) => { // verify token
             if (err) return res.status(403).json({ msg: 'Invaild token' }); // checks for any error in token
             req.user = user;
-            console.log("u r gonna pass this");
             next(); //procede next route
         });
     } catch (error) {
