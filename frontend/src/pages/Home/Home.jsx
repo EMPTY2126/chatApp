@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TextCard from "../../components/TextCard";
+import { FaPlus } from "react-icons/fa6";
 import ChatTopProfile from "../../components/ChatTopProfile";
 import MessageBottom from "../../components/MessageBottom";
 import MessageBox from "../../components/MessageBox";
@@ -8,6 +9,39 @@ import { useAuth } from "../../context/AuthContext";
 import { TbLogout2 } from "react-icons/tb";
 import { createSocket } from "../../socket/socket";
 import handler from "./handler";
+import MessageBubbleRecive from "../../components/MessageBubbleRecive";
+import MessageBubbleSend from "../../components/MessageBubbleSend";
+import { IoClose,IoSend } from "react-icons/io5";
+
+
+
+const chatMessages = [
+  { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
+  { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
+  { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
+  { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
+  { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
+  { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
+  { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
+  { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
+  { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
+  { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
+  { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
+  { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
+  { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
+  { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
+  { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
+  { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
+  { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
+  { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
+  { time: "10:22 AM", message: "Yes, I sent it to your email.", to: "Alice", start: false }
+];
+
+const message = chatMessages.map((ele,index)=>{
+  if(ele.start === true) return <MessageBubbleRecive key={index} time={ele.time} message={ele.message} />
+  else return <MessageBubbleSend key={index} time={ele.time} message={ele.message} />
+})
+
 
 function Home() {
   const { setIsAuth, setUser, user } = useAuth();
@@ -18,25 +52,24 @@ function Home() {
     userName: "",
     userImage: "",
   });
+  const [isAdd,setIsAdd] = useState(false);
+  const [searchValue,setSearchValue] = useState("");
 
-  
   useEffect(() => {
-
-    handler.friendList(setChatProfile,setFriends);//Friend list loader
-    if(user){
+    handler.friendList(setChatProfile, setFriends); //Friend list loader
+    if (user) {
       const newSocket = createSocket(user);
       setSocket(newSocket);
       newSocket.on("connection", () => console.log("socket online"));
       newSocket.on("disconnect", () => console.log("socket offline"));
 
       newSocket.on("messenger", (message) => {
+        console.log("message recived");
         console.log(message);
       });
 
       return () => newSocket.disconnect();
     }
-
-    socket.emit('sendmessage',{});
   }, []);
 
   const handleLogout = () => {
@@ -45,11 +78,20 @@ function Home() {
     setUser(null);
   };
 
+  const searchFriend = (event) => {
+    if (event.key === "Enter") {
+      console.log("Enter key was pressed");
+      setSearchValue("");
+      console.log(searchValue);
+    }
+  };
+
+
   return (
     <div className=" relative w-screen h-screen flex flex-col justify-start items-center">
       <div className="mt-5 w-full h-[96vh] flex">
         {/* chatList and Search Side  */}
-        <div className="ml-16 w-1/4 min-w-[340px] max-w-[500px] h-full flex flex-col">
+        <div className="relative ml-16 w-1/4 min-w-[340px] max-w-[500px] h-full flex flex-col">
           <div className="relative text-white w-full">
             <div className="w-full absolute text-2xl">
               <div className=" flex flex-row justify-between items-center">
@@ -60,9 +102,13 @@ function Home() {
               </div>
             </div>
             {/* Input with search box */}
-            <label className="mt-12 ml-3 mr-4 mb-2 input input-bordered flex items-center gap-2">
-              <input type="text" className="grow" placeholder="Search" />
-              <svg
+            <label onKeyDown={searchFriend} className="mt-12 ml-3 mr-4 mb-2 input input-bordered flex items-center gap-2">
+              <input type="text" value={searchValue} onChange={(e)=>setSearchValue(e.target.value)} className="grow" placeholder={isAdd ? "Find friends here" : "Search"} />
+              {
+                isAdd ?
+                <IoSend color="grey"/>
+                :
+                (<svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 16 16"
                 fill="currentColor"
@@ -73,22 +119,49 @@ function Home() {
                   d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
                   clipRule="evenodd"
                 />
-              </svg>
+              </svg>)
+              }
             </label>
           </div>
+
           {/* chat list */}
+          {
+          !isAdd ?
           <div className="w-full h-full overflow-y-auto ">{friends}</div>
+          :
+          <div>
+            
+          </div>
+          }
+          {/* new friend  */}
+          <div onClick={()=> setIsAdd(!isAdd)} className="mt-auto ml-auto mr-2 min-w-[90px] min-h-[90px] rounded-full bg-[#21ccad] text-center text-black text-3xl flex justify-center items-center transition-transform duration-300 hover:scale-105">
+            {!isAdd ? <FaPlus/> : <IoClose/> }
+          </div>
         </div>
         {/* chat & message container */}
         <div className="mr-16 flex-grow bg-[#1f2937] flex flex-col">
           {/* ChatTopProfile  */}
-          <ChatTopProfile userName={chatProfile.userName} profileImg="idk" />
+          {
+            chatProfile.userId === "" ?
+            ( 
+            <>
+              {/* <ChatTopProfile userName="" profileImg="" /> */}
+              <MessageBox />
+            </>
+            ) :
 
-          {/* Message Box  */}
-          <MessageBox />
+            (
+              <>
+              <ChatTopProfile userName={chatProfile.userName} profileImg="idk" />
 
-          {/* Send message section   */}
-          <MessageBottom chatProfile={chatProfile} socket={socket} />
+              {/* Message Box  */}
+              <MessageBox msg={message} />
+
+              {/* Send message section   */}
+              <MessageBottom chatProfile={chatProfile} socket={socket} />
+              </>
+            )
+          }
         </div>
       </div>
     </div>
@@ -97,41 +170,67 @@ function Home() {
 
 export default Home;
 
- // const friendList = async () => {
-  //   const friends = await handler.friendList(setChatProfile);
-  //   if (friends) setFriends(friends);
-  // };
 
+// const chatMessages = [
+//   { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
+//   { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
+//   { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
+//   { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
+//   { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
+//   { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
+//   { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
+//   { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
+//   { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
+//   { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
+//   { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
+//   { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
+//   { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
+//   { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
+//   { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
+//   { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
+//   { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
+//   { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
+//   { time: "10:22 AM", message: "Yes, I sent it to your email.", to: "Alice", start: false }
+// ];
+
+// const message = chatMessages.map((ele,index)=>{
+//   if(ele.start === true) return <MessageBubbleRecive key={index} time={ele.time} message={ele.message} />
+//   else return <MessageBubbleSend key={index} time={ele.time} message={ele.message} />
+// })
 
 
 // const friendList = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:5000/api/getfriends", {
-  //       method: "GET",
-  //       credentials: "include",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     });
+//   const friends = await handler.friendList(setChatProfile);
+//   if (friends) setFriends(friends);
+// };
 
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     }
+// const friendList = async () => {
+//   try {
+//     const response = await fetch("http://localhost:5000/api/getfriends", {
+//       method: "GET",
+//       credentials: "include",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//     });
 
-  //     let data = await response.json();
-  //     data = data.friendList.friendsList;
-  //     const mapData = data.map((ele, index) => (
-  //       <TextCard
-  //         textCardHandler={()=>chatClickHandler(ele.userId,ele.userName)}
-  //         key={index}
-  //         userId={ele.userId}
-  //         userName={ele.userName}
-  //         date="monday"
-  //       />
-  //     ));
-  //     setFriends(mapData);
-  //   } catch (error) {
-  //     console.error("Error fetching friends list:", error);
-  //   }
-  // };
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! Status: ${response.status}`);
+//     }
 
+//     let data = await response.json();
+//     data = data.friendList.friendsList;
+//     const mapData = data.map((ele, index) => (
+//       <TextCard
+//         textCardHandler={()=>chatClickHandler(ele.userId,ele.userName)}
+//         key={index}
+//         userId={ele.userId}
+//         userName={ele.userName}
+//         date="monday"
+//       />
+//     ));
+//     setFriends(mapData);
+//   } catch (error) {
+//     console.error("Error fetching friends list:", error);
+//   }
+// };

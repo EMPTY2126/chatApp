@@ -22,7 +22,7 @@ const signup = async (req, res) => {
         userEmail,
         userId: userEmail
     });
-    let friendInitializer = await friendController.initializer(userEmail); // initilizing friendlist collection
+    let friendInitializer = await friendController.initializer(newUser._id); // initilizing friendlist collection
     try {
         if (!friendInitializer) throw new Error("friend initilizer error");
         await newUser.save(); // save the user in model and return user
@@ -56,7 +56,7 @@ const authenticator = (req, res, next) => {
     try {
         jwt.verify(token, SECRET, (err, user) => { // verify token
             if (err) return res.status(403).json({ msg: 'Invaild token' }); // checks for any error in token
-            req.user = user;
+            req.user = user.user;
             next(); //procede next route
         });
     } catch (error) {

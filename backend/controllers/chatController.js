@@ -1,12 +1,11 @@
 import Message from "../db/models/messageModel.js";
 
-const sendMessage = async (userId,reciverId,message)=>{
+const sendMessage = async (io,conversationId,reciverId,message)=>{
     if(reciverId){
         io.to(reciverId).emit('messenger',message);
     }
     let newMessage = new Message({
-        sender:userId,
-        reciver:reciverId,
+        conversationId,
         contend:message,
         delivered:true,
         isRead:false
@@ -14,6 +13,7 @@ const sendMessage = async (userId,reciverId,message)=>{
 
     await newMessage.save();
 }
+
 
 export default {
     sendMessage,

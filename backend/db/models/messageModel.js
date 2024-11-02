@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
-    sender:String,
-    reciver:String,
+    conversationId:{
+        type:String,
+        require:true
+    },
     content:String,
     isRead:Boolean,
     delivered:Boolean,
-    timestamp:{
+    createdAt:{
         type:Date,
         default:Date.now() 
     }

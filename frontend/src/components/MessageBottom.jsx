@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { IoAddOutline } from "react-icons/io5";
-import { IoSendSharp } from "react-icons/io5";
+import { IoAddOutline, IoSendSharp } from "react-icons/io5";
 
 function MessageBottom({ chatProfile,socket }) {
   const [chatMessage, setChatMessage] = useState("");
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     let msg = {
       reciver : chatProfile.userId ,
       message : chatMessage
     }
+
     if(socket){
-      socket.emit('sendmessage',msg);
+      await socket.emit('sendmessage',msg);
     }
+    setChatMessage("");
   };
+
 
   return (
     <div className="h-24 w-full flex justify-center items-center bg-slate-700">
@@ -21,6 +23,7 @@ function MessageBottom({ chatProfile,socket }) {
         <IoAddOutline />
       </div>
       <input
+        value={chatMessage}
         onChange={(e) => setChatMessage(e.target.value)}
         placeholder="Type a message"
         className="p-5 outline-none w-3/4 h-12 rounded-lg  text-slate-300"
