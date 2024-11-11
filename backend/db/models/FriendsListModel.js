@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 
 const friendsListSchema = new mongoose.Schema({
-    id:{type: mongoose.Schema.Types.Mixed, require:true},
+    id:{type: String, require:true},
     friendsList: [
         {
           type: mongoose.Schema.Types.ObjectId, 
@@ -12,6 +12,6 @@ const friendsListSchema = new mongoose.Schema({
       ],
 });
 
-const FriendList = mongoose.model('FriendsList',friendsListSchema);
+const FriendList = mongoose.model('friendlist',friendsListSchema);
 
 export default FriendList;

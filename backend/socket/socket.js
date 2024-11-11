@@ -1,6 +1,6 @@
 import chatController from '../controllers/chatController.js'
 import friendController from '../controllers/friendController.js';
-import FriendList from '../db/models/FriendsListModel.js';
+import conversationUtil from '../controllers/utils/conversationUtil.js';
 
 export const socketIO = (io) => {
     const onlineUsers = {};
@@ -10,15 +10,13 @@ export const socketIO = (io) => {
 
         socket.on('newconversation', async (info)=> {
             await friendController.newConversation(info.senderId,info.reciverId);
-            
-
         });
 
         socket.on('sendmessage', async (msg) => {
             const { reciver, message } = msg;
             const reciverId = onlineUsers[reciver];
-            let conversationId = userId+reciver;
-            await chatController.sendMessage(io,conversationId,reciverId,message);
+            const conversationId = await conversationUtil.getConversationId(userId, reciver);
+            await chatController.sendMessage(userId ,reciver, io,conversationId,reciverId,message);
         });
 
         socket.on('disconnect', () => {

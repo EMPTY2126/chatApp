@@ -1,7 +1,6 @@
 import FriendList from "../db/models/FriendsListModel.js";
-import {v4 as uuid4} from 'uuid'
+import conversationUtil from "./utils/conversationUtil.js";
 import User from "../db/models/userModel.js";
-import Conversation from '../db/models/conversation.js'
 
 const initializer = async (userId) => {
   let newfriendlist = new FriendList({ id: userId });
@@ -14,42 +13,39 @@ const initializer = async (userId) => {
 }
 
 
-const newConversation = async (senderId,reciverId)=>{
-  const conversationId = uuid4();
-  let newCon = new Conversation({
-    conversationId,
-    participants:[senderId,reciverId],
-  });
+const newConversation = async (req, res) => {
+  const { senderId, reciverId } = req.body;
+  const sender_Id = await User.findOne({ userId: senderId })
+    .select('_id');
 
-  const updateFriends = await FriendList.findOneAndUpdate({id:senderId},
-    {$addToSet:{friendsList:reciverId}},
-    {new: true}
-  ).select('friendsList');
-
-  const newfriend = await FriendList.findOne({ id: senderId })
-  .select('friendsList')
-  .lean();
-
-  console.log(newfriend.friendsList, "this is from newconversation");
-  
+  const reciver_Id = await User.findOne({ userId: reciverId })
+    .select('_id');
   try {
-    await newCon.save();
-    return conversationId;
+    const conversationId = await conversationUtil.createConversationId(senderId, reciverId);
+    const updateFriendsSender = await FriendList.findOneAndUpdate({ id: senderId },
+      { $addToSet: { friendsList: reciver_Id } },
+      { new: true }
+    ).select('friendsList');
+
+    const updateFriendsReciver = await FriendList.findOneAndUpdate({ id: reciverId },
+      { $addToSet: { friendsList: sender_Id } },
+      { new: true }
+    ).select('friendsList');
+    return res.status(200).json({ msg: 'success' });
   } catch (error) {
-    console.log("Error in new conversation");
-    console.log(error);
-    return null;
+    console.log("Error in new conversation", error);
+    return res.status(200).json({ msg: 'failure' });
   }
 }
 
+
+
 const getFriendList = async (req, res) => {
   console.log("used getfriends route");
-  // console.log(req.user._id);
-  const friendList = await FriendList.findOne({ id: req.user._id })
+  const friendList = await FriendList.findOne({ id: req.user.userId })
     .populate('friendsList', 'userName userEmail userImage userId')
     .select('-hash -salt')
     .exec();
-
   res.status(200).json({ friendList });
 }
 

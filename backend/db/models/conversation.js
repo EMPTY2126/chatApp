@@ -6,7 +6,7 @@ const conveSchema = new mongoose.Schema({
         required : true
     },
     participants :[{
-        type : mongoose.Schema.Types.ObjectId
+        type : String
     }]
 });
 

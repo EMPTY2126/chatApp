@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import TextCard from "../../components/TextCard";
 import { FaPlus } from "react-icons/fa6";
 import ChatTopProfile from "../../components/ChatTopProfile";
 import MessageBottom from "../../components/MessageBottom";
@@ -9,38 +8,8 @@ import { useAuth } from "../../context/AuthContext";
 import { TbLogout2 } from "react-icons/tb";
 import { createSocket } from "../../socket/socket";
 import handler from "./handler";
-import MessageBubbleRecive from "../../components/MessageBubbleRecive";
-import MessageBubbleSend from "../../components/MessageBubbleSend";
 import { IoClose,IoSend } from "react-icons/io5";
 
-
-
-const chatMessages = [
-  { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
-  { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
-  { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
-  { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
-  { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
-  { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
-  { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
-  { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
-  { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
-  { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
-  { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
-  { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
-  { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
-  { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
-  { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
-  { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
-  { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
-  { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
-  { time: "10:22 AM", message: "Yes, I sent it to your email.", to: "Alice", start: false }
-];
-
-const message = chatMessages.map((ele,index)=>{
-  if(ele.start === true) return <MessageBubbleRecive key={index} time={ele.time} message={ele.message} />
-  else return <MessageBubbleSend key={index} time={ele.time} message={ele.message} />
-})
 
 
 function Home() {
@@ -54,9 +23,11 @@ function Home() {
   });
   const [isAdd,setIsAdd] = useState(false);
   const [searchValue,setSearchValue] = useState("");
+  const [message,setMessage] = useState([]);
 
   useEffect(() => {
-    handler.friendList(setChatProfile, setFriends); //Friend list loader
+    handler.friendList(user, setChatProfile, setFriends, setMessage); //Friend list loader
+    
     if (user) {
       const newSocket = createSocket(user);
       setSocket(newSocket);
@@ -170,67 +141,3 @@ function Home() {
 
 export default Home;
 
-
-// const chatMessages = [
-//   { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
-//   { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
-//   { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
-//   { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
-//   { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
-//   { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
-//   { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
-//   { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
-//   { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
-//   { time: "10:00 AM", message: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Illo maiores illum aperiam nesciunt ratione consectetur!", from: "Alice", start: true },
-//   { time: "10:02 AM", message: "I'm good, how about you?", to: "Alice", start: false },
-//   { time: "10:03 AM", message: "Doing well, thanks!", from: "Alice", start: false },
-//   { time: "10:05 AM", message: "Are you free for a call later?", to: "Alice", start: true },
-//   { time: "10:06 AM", message: "Sure, what time works for you?", from: "Alice", start: false },
-//   { time: "10:10 AM", message: "How about 3 PM?", to: "Alice", start: false },
-//   { time: "10:12 AM", message: "Perfect, I'll be ready.", from: "Alice", start: true },
-//   { time: "10:15 AM", message: "Cool, see you then.", to: "Alice", start: false },
-//   { time: "10:20 AM", message: "By the way, did you finish the report?", from: "Alice", start: true },
-//   { time: "10:22 AM", message: "Yes, I sent it to your email.", to: "Alice", start: false }
-// ];
-
-// const message = chatMessages.map((ele,index)=>{
-//   if(ele.start === true) return <MessageBubbleRecive key={index} time={ele.time} message={ele.message} />
-//   else return <MessageBubbleSend key={index} time={ele.time} message={ele.message} />
-// })
-
-
-// const friendList = async () => {
-//   const friends = await handler.friendList(setChatProfile);
-//   if (friends) setFriends(friends);
-// };
-
-// const friendList = async () => {
-//   try {
-//     const response = await fetch("http://localhost:5000/api/getfriends", {
-//       method: "GET",
-//       credentials: "include",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
-
-//     if (!response.ok) {
-//       throw new Error(`HTTP error! Status: ${response.status}`);
-//     }
-
-//     let data = await response.json();
-//     data = data.friendList.friendsList;
-//     const mapData = data.map((ele, index) => (
-//       <TextCard
-//         textCardHandler={()=>chatClickHandler(ele.userId,ele.userName)}
-//         key={index}
-//         userId={ele.userId}
-//         userName={ele.userName}
-//         date="monday"
-//       />
-//     ));
-//     setFriends(mapData);
-//   } catch (error) {
-//     console.error("Error fetching friends list:", error);
-//   }
-// };

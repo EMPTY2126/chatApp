@@ -22,8 +22,8 @@ const signup = async (req, res) => {
         userEmail,
         userId: userEmail
     });
-    let friendInitializer = await friendController.initializer(newUser._id); // initilizing friendlist collection
     try {
+        let friendInitializer = await friendController.initializer(newUser.userId); // initilizing friendlist collection
         if (!friendInitializer) throw new Error("friend initilizer error");
         await newUser.save(); // save the user in model and return user
         return res.status(201).json({ isSuccess: true, user: newUser, msg: "user created succesfully" });

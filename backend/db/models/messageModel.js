@@ -5,6 +5,14 @@ const messageSchema = new mongoose.Schema({
         type:String,
         require:true
     },
+    from: {
+        type:String,
+        require:true
+    },
+    to : {
+        type:String,
+        require:true
+    },
     content:String,
     isRead:Boolean,
     delivered:Boolean,
