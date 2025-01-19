@@ -17,7 +17,7 @@ const createConversationId = async(senderId,reciverId)=>{
         console.log("new thingy created");
         return newConversation.conversationId;
     } catch (error) {
-        console.log("idk Ma", error);
+        console.log("error in creating conversation ID", error);
         return null;
     }
 };

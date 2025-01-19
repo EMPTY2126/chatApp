@@ -11,7 +11,6 @@ const getMessages = async(req,res)=>{
         const message = await Message.find({conversationId})
         .select("content createdAt from to");
         if(!message) throw new Error("Error while retriving message");
-        // console.log(message);
         res.status(200).json({message});
     } catch (error) {
         console.log("Error in getConversation",error);
@@ -21,9 +20,10 @@ const getMessages = async(req,res)=>{
 
 
 
-const sendMessage = async (sender,reciver, io, conversationId, reciverId, message) => {
+const sendMessage = async (sender,reciver, io, conversationId,senderId, reciverId, message) => {
+    io.to(senderId).emit('messenger', {sender,message});
     if (reciverId) {
-        io.to(reciverId).emit('messenger', message);
+        io.to(reciverId).emit('messenger', {sender,message});
     }
     let newMessage = new Message({
         from:sender,

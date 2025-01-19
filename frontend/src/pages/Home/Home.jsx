@@ -9,6 +9,8 @@ import { TbLogout2 } from "react-icons/tb";
 import { createSocket } from "../../socket/socket";
 import handler from "./handler";
 import { IoClose,IoSend } from "react-icons/io5";
+import MessageBubbleRecive from "../../components/MessageBubbleRecive";
+import MessageBubbleSend from "../../components/MessageBubbleSend";
 
 
 
@@ -34,9 +36,16 @@ function Home() {
       newSocket.on("connection", () => console.log("socket online"));
       newSocket.on("disconnect", () => console.log("socket offline"));
 
-      newSocket.on("messenger", (message) => {
+      newSocket.on("messenger", (data) => {
         console.log("message recived");
-        console.log(message);
+        console.log(data);
+        if(data.sender === user){
+          let newMessage = <MessageBubbleRecive key={`${Date.now()}-${Math.random()}`} time={"9:00"} message={data.message}/>
+          setMessage((message)=>[...message,newMessage]);
+        } else {
+          let newMessage = <MessageBubbleSend key={`${Date.now()}-${Math.random()}`} time={"9:00"} message={data.message}/>
+          setMessage((message)=>[...message,newMessage]);
+        }
       });
 
       return () => newSocket.disconnect();

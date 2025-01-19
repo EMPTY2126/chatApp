@@ -16,6 +16,12 @@ function MessageBottom({ chatProfile,socket }) {
     setChatMessage("");
   };
 
+  // const enterSend = (e)=>{
+  //   if(e.key === 'Enter' ) sendMessage()
+  // }
+
+
+
 
   return (
     <div className="h-24 w-full flex justify-center items-center bg-slate-700">
@@ -23,6 +29,7 @@ function MessageBottom({ chatProfile,socket }) {
         <IoAddOutline />
       </div>
       <input
+        onKeyDown={(e)=>{if(e.key === 'Enter') sendMessage() }}
         value={chatMessage}
         onChange={(e) => setChatMessage(e.target.value)}
         placeholder="Type a message"

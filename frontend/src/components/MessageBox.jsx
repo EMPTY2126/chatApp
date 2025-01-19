@@ -1,11 +1,18 @@
-import React from "react";
+import React,{useEffect, useRef} from "react";
   
 function MessageBox({msg}) {
+  const messageEndRef = useRef(null);
+
+  useEffect(() => {
+    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [msg]);
+
   return (
     msg ?
     (
       <div className="w-full h-full overflow-y-auto ">
       {msg}
+      <div ref={messageEndRef} />
       </div>
     ):
     (

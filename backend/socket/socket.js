@@ -16,7 +16,7 @@ export const socketIO = (io) => {
             const { reciver, message } = msg;
             const reciverId = onlineUsers[reciver];
             const conversationId = await conversationUtil.getConversationId(userId, reciver);
-            await chatController.sendMessage(userId ,reciver, io,conversationId,reciverId,message);
+            await chatController.sendMessage(userId ,reciver, io,conversationId,socket.id, reciverId,message);
         });
 
         socket.on('disconnect', () => {
