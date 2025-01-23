@@ -4,7 +4,13 @@ function MessageBox({msg}) {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const timeoutId = setTimeout(() => {
+      messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, 0);
+
+  return () => clearTimeout(timeoutId);
+  
   }, [msg]);
 
   return (

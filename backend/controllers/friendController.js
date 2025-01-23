@@ -41,8 +41,9 @@ const newConversation = async (req, res) => {
 
 
 const getFriendList = async (req, res) => {
+  const userId = req.params.userId;
   console.log("used getfriends route");
-  const friendList = await FriendList.findOne({ id: req.user.userId })
+  const friendList = await FriendList.findOne({ id: userId })
     .populate('friendsList', 'userName userEmail userImage userId')
     .select('-hash -salt')
     .exec();

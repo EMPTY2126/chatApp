@@ -7,10 +7,8 @@ import chatController from "../controllers/chatController.js";
 
 export const router = Router();
 
-router.post('/api/signup',authController.signup);
-router.post('/api/login',authController.login);
-router.get('/api/getfriends', authController.authenticator,friendController.getFriendList);
-router.post('/api/newconversation', friendController.newConversation);
-router.post('/api/getmessage',chatController.getMessages)
-
-
+router.post('/signup',authController.signup);
+router.post('/login',authController.login);
+router.get('/getfriends/:userId',friendController.getFriendList);
+router.post('/newconversation', friendController.newConversation);
+router.post('/getmessage',chatController.getMessages);

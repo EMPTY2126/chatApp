@@ -14,7 +14,7 @@ import MessageBubbleSend from "../../components/MessageBubbleSend";
 
 
 
-function Home() {
+function Home({userr}) {
   const { setIsAuth, setUser, user } = useAuth();
   const [friends, setFriends] = useState([]);
   const [socket, setSocket] = useState(null);
@@ -28,6 +28,7 @@ function Home() {
   const [message,setMessage] = useState([]);
 
   useEffect(() => {
+    console.log(userr," from home");
     handler.friendList(user, setChatProfile, setFriends, setMessage); //Friend list loader
     
     if (user) {

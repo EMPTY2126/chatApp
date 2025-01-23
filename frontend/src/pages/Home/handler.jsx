@@ -51,7 +51,7 @@ const chatClickHandler = async (
   console.log(ids);
 
   try {
-    const response = await fetch("http://localhost:5000/api/getmessage", {
+    const response = await fetch("http://localhost:5001/api/getmessage", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -100,7 +100,7 @@ const chatClickHandler = async (
 
 const friendList = async (user, setChatProfile, setFriends, setMessage) => {
   try {
-    const response = await fetch("http://localhost:5000/api/getfriends", {
+    const response = await fetch(`http://localhost:5001/api/getfriends/${user}`, {
       method: "GET",
       credentials: "include",
       headers: {

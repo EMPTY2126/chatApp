@@ -2,7 +2,7 @@ import { io } from 'socket.io-client'
 
 
 export const createSocket = (userId) => {
-    const socket = io('http://localhost:5000', {
+    const socket = io('http://localhost:5001', {
         query:{userId:userId,}
     });
     return socket;

@@ -14,6 +14,7 @@ export const socketIO = (io) => {
 
         socket.on('sendmessage', async (msg) => {
             const { reciver, message } = msg;
+            console.log(reciver,userId," from send message");
             const reciverId = onlineUsers[reciver];
             const conversationId = await conversationUtil.getConversationId(userId, reciver);
             await chatController.sendMessage(userId ,reciver, io,conversationId,socket.id, reciverId,message);

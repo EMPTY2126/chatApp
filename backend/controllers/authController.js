@@ -22,6 +22,7 @@ const signup = async (req, res) => {
         userEmail,
         userId: userEmail
     });
+    
     try {
         let friendInitializer = await friendController.initializer(newUser.userId); // initilizing friendlist collection
         if (!friendInitializer) throw new Error("friend initilizer error");

@@ -1,5 +1,4 @@
 import Message from "../db/models/messageModel.js";
-import Conversation from "../db/models/conversation.js";
 import conversationUtil from "./utils/conversationUtil.js";
 
 

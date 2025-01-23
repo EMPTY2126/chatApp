@@ -16,11 +16,6 @@ function MessageBottom({ chatProfile,socket }) {
     setChatMessage("");
   };
 
-  // const enterSend = (e)=>{
-  //   if(e.key === 'Enter' ) sendMessage()
-  // }
-
-
 
 
   return (
